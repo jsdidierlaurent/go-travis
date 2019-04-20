@@ -121,8 +121,8 @@ type BuildsByRepoOption struct {
 	Offset int `url:"offset,omitempty"`
 	// Attributes to sort builds by
 	SortBy string `url:"sort_by,omitempty"`
-	// include for eager Loading
-	include string `url:"include"`
+	// Include for eager Loading
+	Include string `url:"include,omitempty"`
 }
 
 type getBuildsResponse struct {
@@ -185,11 +185,6 @@ func (bs *BuildsService) Find(ctx context.Context, id uint) (*Build, *http.Respo
 //
 // Travis CI API docs: https://developer.travis-ci.com/resource/builds#for_current_user
 func (bs *BuildsService) List(ctx context.Context, opt *BuildsOption) ([]Build, *http.Response, error) {
-	if opt == nil {
-		opt = &BuildsOption{}
-	}
-	opt.include = "build.commit"
-
 	u, err := urlWithOptions("/builds", opt)
 	if err != nil {
 		return nil, nil, err
@@ -213,11 +208,6 @@ func (bs *BuildsService) List(ctx context.Context, opt *BuildsOption) ([]Build, 
 //
 // Travis CI API docs: https://developer.travis-ci.com/resource/builds#find
 func (bs *BuildsService) ListByRepoId(ctx context.Context, repoId uint, opt *BuildsByRepoOption) ([]Build, *http.Response, error) {
-	if opt == nil {
-		opt = &BuildsByRepoOption{}
-	}
-	opt.include = "build.commit"
-
 	u, err := urlWithOptions(fmt.Sprintf("/repo/%d/builds", repoId), opt)
 	if err != nil {
 		return nil, nil, err
@@ -241,11 +231,6 @@ func (bs *BuildsService) ListByRepoId(ctx context.Context, repoId uint, opt *Bui
 //
 // Travis CI API docs: https://developer.travis-ci.com/resource/builds#find
 func (bs *BuildsService) ListByRepoSlug(ctx context.Context, repoSlug string, opt *BuildsByRepoOption) ([]Build, *http.Response, error) {
-	if opt == nil {
-		opt = &BuildsByRepoOption{}
-	}
-	opt.include = "build.commit"
-
 	u, err := urlWithOptions(fmt.Sprintf("/repo/%s/builds", url.QueryEscape(repoSlug)), opt)
 	if err != nil {
 		return nil, nil, err
